@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All-in-One Smart Calculators</title>
+  <meta name="google-site-verification" content="wbeIIucfCi5CbnfN_sT5UcqK63A0A4epe4Rxp4VwTHQ" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #12121e;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #00e676;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+    .menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto 20px auto;
+    }
+    .menu button {
+      background-color: #252538;
+      color: white;
+      border: 2px solid #3f3f5e;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .menu button.active {
+      background-color: #00e676;
+      color: #12121e;
+      border-color: #00e676;
+    }
+    .tool-box {
+      display: none;
+      background-color: #1e1e30;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 360px;
+      margin: auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .tool-box.show {
+      display: block;
+    }
+    input {
+      width: 85%;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+    }
+    .calc-btn {
+      background-color: #ff9800;
+      color: #12121e;
+      font-weight: bold;
+      padding: 12px 25px;
+      font-size: 17px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+      width: 90%;
+    }
+    .result {
+      margin-top: 18px;
+      font-size: 19px;
+      font-weight: bold;
+      color: #ffd700;
+      background-color: #2a2a42;
+      padding: 12px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Smart 4-in-1 Tools</h1>
+
+  <!-- 4 Tools Ke Buttons -->
+  <div class="menu">
+    <button class="tab-btn active" onclick="openTool('ageTool', this)">Age Calculator</button>
+    <button class="tab-btn" onclick="openTool('bmiTool', this)">BMI & Fitness</button>
+    <button class="tab-btn" onclick="openTool('emiTool', this)">EMI Calculator</button>
+    <button class="tab-btn" onclick="openTool('weightTool', this)">Pound to KG</button>
+  </div>
+
+  <!-- 1. Age Calculator -->
+  <div id="ageTool" class="tool-box show">
+    <h2>Age Calculator</h2>
+    <p>Apni Janam Tarikh (DOB) Chunen:</p>
+    <input type="date" id="dob">
+    <button class="calc-btn" onclick="calcAge()">Umar Nikalen</button>
+    <div id="ageRes" class="result">Result yahan dikhega</div>
+  </div>
+
+  <!-- 2. BMI & Fitness Calculator -->
+  <div id="bmiTool" class="tool-box">
+    <h2>BMI & Fitness</h2>
+    <input type="number" id="weightKg" placeholder="Vajan (KG mein, jaise 65)">
+    <input type="number" id="heightCm" placeholder="Lambai (CM mein, jaise 170)">
+    <button class="calc-btn" onclick="calcBMI()">BMI Check Karen</button>
+    <div id="bmiRes" class="result">Result yahan dikhega</div>
+  </div>
+
+  <!-- 3. EMI Calculator -->
+  <div id="emiTool" class="tool-box">
+    <h2>Loan EMI Calculator</h2>
+    <input type="number" id="loanAmt" placeholder="Loan Rashi (Rs, jaise 100000)">
+    <input type="number" id="loanRate" placeholder="Byaj Dar % (jaise 10)">
+    <input type="number" id="loanMonths" placeholder="Mahine (Months, jaise 12)">
+    <button class="calc-btn" onclick="calcEMI()">EMI Nikalen</button>
+    <div id="emiRes" class="result">Result yahan dikhega</div>
+  </div>
+
+  <!-- 4. Weight Converter -->
+  <div id="weightTool" class="tool-box">
+    <h2>Pound to KG</h2>
+    <input type="number" id="poundVal" placeholder="Pound likhen (jaise 470)">
+    <button class="calc-btn" onclick="calcWeight()">KG Mein Badlen</button>
+    <div id="weightRes" class="result">Result yahan dikhega</div>
+  </div>
+
+  <script>
+    // Tab badalne ka function
+    function openTool(toolId, btn) {
+      let boxes = document.querySelectorAll('.tool-box');
+      boxes.forEach(b => b.classList.remove('show'));
+      
+      let btns = document.querySelectorAll('.tab-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(toolId).classList.add('show');
+      btn.classList.add('active');
+    }
+
+    // 1. Age Hisab
+    function calcAge() {
+      let dobVal = document.getElementById('dob').value;
+      if (!dobVal) return;
+      let dob = new Date(dobVal);
+      let today = new Date();
+      let years = today.getFullYear() - dob.getFullYear();
+      let months = today.getMonth() - dob.getMonth();
+      if (months < 0 || (months === 0 && today.getDate() < dob.getDate())) {
+        years--;
+        months += 12;
+      }
+      document.getElementById('ageRes').innerText = years + " Saal, " + months + " Mahine";
+    }
+
+    // 2. BMI Hisab
+    function calcBMI() {
+      let w = parseFloat(document.getElementById('weightKg').value);
+      let h = parseFloat(document.getElementById('heightCm').value) / 100;
+      if (!w || !h) return;
+      let bmi = (w / (h * h)).toFixed(1);
+      let status = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal (Fit)" : "Overweight";
+      document.getElementById('bmiRes').innerText = "BMI: " + bmi + " (" + status + ")";
+    }
+
+    // 3. EMI Hisab
+    function calcEMI() {
+      let p = parseFloat(document.getElementById('loanAmt').value);
+      let r = parseFloat(document.getElementById('loanRate').value) / 12 / 100;
+      let n = parseFloat(document.getElementById('loanMonths').value);
+      if (!p || !r || !n) return;
+      let emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      document.getElementById('emiRes').innerText = "Har Mahine EMI: Rs " + emi.toFixed(0);
+    }
+
+    // 4. Weight Hisab
+    function calcWeight() {
+      let p = parseFloat(document.getElementById('poundVal').value);
+      if (!p) return;
+      let kg = (p * 0.4536).toFixed(2);
+      document.getElementById('weightRes').innerText = kg + " KG";
+    }
+  </script>
+<script data-cfasync="false" src="https://bicea.org/14/133b11f518767cf2ba0cbdba57a46563"></script>
+</body>
+</html>
